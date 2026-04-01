@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+sqlite3.db
+db.sqlite3
+.env
+venv/
+venv_new/
+env/
+
+# Node
+node_modules/
+dist/
+build/
+.env.local
+.env.development
+.env.test
+.env.production
+npm-debug.log
+yarn-error.log
+
+# IDE
+.vscode/
+.idea/
+.DS_Store

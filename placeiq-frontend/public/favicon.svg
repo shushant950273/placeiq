@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Background rounded square -->
+  <rect width="64" height="64" rx="12" fill="#1e3a5f"/>
+
+  <!-- Bold "P" letter -->
+  <text
+    x="10"
+    y="47"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="46"
+    font-weight="900"
+    fill="white"
+  >P</text>
+
+  <!-- Upward trend line (chart) — top right area of the icon -->
+  <polyline
+    points="34,48  42,36  50,40  58,26"
+    fill="none"
+    stroke="#4fc3f7"
+    stroke-width="3.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <!-- Dot at end of trend line -->
+  <circle cx="58" cy="26" r="3" fill="#4fc3f7"/>
+</svg>

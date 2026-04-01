@@ -1,0 +1,282 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+/* ── Design tokens (GitHub Minimal) ─────────────── */
+:root {
+  --primary:      #1F2328;
+  --secondary:    #24292F;
+  --accent:       #0969DA;
+  --accent-light: #D0D7DE;
+  --success:      #1A7F37;
+  --warning:      #BF8700;
+  --danger:       #D1242F;
+  --bg:           #F6F8FA;
+  --surface:      #FFFFFF;
+  --border:       #E5E7EB;
+  --text-primary: #1F2328;
+  --text-muted:   #656D76;
+  --shadow-card:  0 1px 3px rgba(31,35,40,0.04);
+  --shadow-hover: 0 4px 12px rgba(31,35,40,0.08);
+  --shadow-btn:   0 1px 0 rgba(31,35,40,0.04);
+}
+
+/* ── Base ──────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Selection ─────────────────────────────────────── */
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ── Focus ring ────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ── Custom scrollbar ──────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D0D7DE; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #AFB8C1; }
+
+/* ── Easing ────────────────────────────────────────── */
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Gradient text utility ─────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent) 0%, #8B5CF6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Animated gradient background ─────────────────── */
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.bg-animated-gradient {
+  background: linear-gradient(135deg, #0F2044 0%, #1E3A5F 35%, #1a5276 65%, #2E75B6 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 12s ease infinite;
+}
+
+/* ── Dot grid pattern ──────────────────────────────── */
+.bg-dot-grid {
+  background-image: radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* ── Shimmer ───────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* ── Card styles ───────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.25s, transform 0.25s;
+}
+.card:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+/* ── Button base ───────────────────────────────────── */
+.btn-primary {
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 12px;
+  padding: 0.75rem 1.5rem;
+  box-shadow: var(--shadow-btn);
+  transition: all 0.2s;
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(59,130,246,0.4);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* ── Input focus ───────────────────────────────────── */
+.input-field {
+  background: #f8fafc;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+.input-field:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+}
+
+/* ── Sidebar active indicator ──────────────────────── */
+.nav-active-indicator {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  background: #60a5fa;
+  border-radius: 0 4px 4px 0;
+}
+
+/* ── Dark Mode Overrides ───────────────────────────── */
+.dark body {
+  background-color: #0D1117; /* GitHub Dark bg */
+  color: #E6EDF3;
+}
+
+.dark ::-webkit-scrollbar-track { background: transparent; }
+.dark ::-webkit-scrollbar-thumb { background: #484F58; }
+.dark ::-webkit-scrollbar-thumb:hover { background: #6E7681; }
+
+.dark .card {
+  background: #161B22;   /* GitHub Dark surface */
+  border-color: #30363D; /* GitHub Dark border */
+  box-shadow: 0 1px 3px rgba(1,4,9,0.5);
+}
+
+.dark .input-field {
+  background: #0D1117; 
+  border-color: #30363D;
+  color: #E6EDF3;
+}
+.dark .input-field:focus {
+  background: #161B22;
+  border-color: #58A6FF;
+  box-shadow: 0 0 0 3px rgba(88,166,255,0.1);
+}
+.dark .skeleton {
+  background: linear-gradient(90deg, #161B22 25%, #21262D 50%, #161B22 75%);
+  background-size: 200% 100%;
+}
+
+/* ── GLOBAL DARK MODE HOTFIXES ─────────────────────── */
+/* 
+   Globally hijack standard light-mode Tailwind utility classes 
+   when .dark is active to ensure perfect readability everywhere 
+   without patching individual files.
+*/
+
+.dark .bg-white, 
+.dark .bg-white\/5, .dark .bg-white\/10, .dark .bg-white\/15, 
+.dark .bg-white\/20, .dark .bg-white\/50, .dark .bg-white\/80, 
+.dark .bg-white\/90 { 
+  background-color: #161B22 !important; 
+}
+
+.dark .bg-gray-50, .dark .bg-slate-50,
+.dark .bg-gray-50\/10, .dark .bg-gray-50\/40, 
+.dark .bg-gray-50\/50, .dark .bg-gray-50\/60, 
+.dark .bg-gray-50\/70,
+.dark .bg-slate-50\/10, .dark .bg-slate-50\/40, 
+.dark .bg-slate-50\/50, .dark .bg-slate-50\/60, 
+.dark .bg-slate-50\/70 { 
+  background-color: #0D1117 !important; 
+}
+
+.dark .bg-gray-100, .dark .bg-slate-100,
+.dark .bg-gray-100\/50, .dark .bg-slate-100\/50 { 
+  background-color: #21262D !important; 
+}
+
+/* Text class overrides */
+.dark .text-gray-900, .dark .text-slate-900,
+.dark .text-gray-800, .dark .text-slate-800 { 
+  color: #E6EDF3 !important; 
+}
+.dark .text-gray-700, .dark .text-slate-700,
+.dark .text-gray-600, .dark .text-slate-600 { 
+  color: #C9D1D9 !important; 
+}
+.dark .text-gray-500, .dark .text-slate-500,
+.dark .text-gray-400, .dark .text-slate-400 { 
+  color: #8B949E !important; 
+}
+
+/* Border class overrides */
+.dark .border-gray-200, .dark .border-slate-200,
+.dark .border-gray-100, .dark .border-slate-100 {
+  border-color: #30363D !important;
+}
+
+/* Divide (Table Borders) overrides */
+.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #30363D !important;
+}
+
+/* Hover background overrides */
+.dark .hover\:bg-gray-50:hover, 
+.dark .hover\:bg-slate-50:hover,
+.dark .hover\:bg-gray-100:hover, 
+.dark .hover\:bg-slate-100:hover,
+.dark .hover\:bg-gray-50\/10:hover,
+.dark .hover\:bg-gray-50\/40:hover,
+.dark .hover\:bg-gray-50\/50:hover,
+.dark .hover\:bg-gray-50\/60:hover,
+.dark .hover\:bg-gray-50\/70:hover,
+.dark .hover\:bg-slate-50\/10:hover,
+.dark .hover\:bg-slate-50\/40:hover,
+.dark .hover\:bg-slate-50\/50:hover,
+.dark .hover\:bg-slate-50\/60:hover,
+.dark .hover\:bg-slate-50\/70:hover,
+.dark .hover\:bg-slate-700\/30:hover,
+.dark .hover\:bg-white\/10:hover,
+.dark .hover\:bg-white\/20:hover {
+  background-color: #21262D !important;
+}
+
+/* Safe universal form overrides */
+.dark input:not([type="checkbox"]):not([type="radio"]), 
+.dark textarea, 
+.dark select {
+  background-color: #0D1117 !important;
+  color: #E6EDF3 !important;
+  border-color: #30363D !important;
+}
+.dark input::placeholder, 
+.dark textarea::placeholder {
+  color: #8B949E !important;
+}
