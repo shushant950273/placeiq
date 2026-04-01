@@ -4,6 +4,15 @@ djangorestframework>=3.15,<3.16
 djangorestframework-simplejwt>=5.3
 django-cors-headers>=4.3
 
+# PostgreSQL & Environment Variables
+psycopg2-binary>=2.9.9
+dj-database-url>=2.1.0
+python-dotenv>=1.0.1
+
+# Production Deployment Web Server & Static Files
+gunicorn>=21.2.0
+whitenoise>=6.6.0
+
 # Optional — PDF export feature (requires Python <=3.13 for pre-built wheels)
 # Uncomment and install separately on Python 3.12 / 3.13:
 # Pillow>=10.2
