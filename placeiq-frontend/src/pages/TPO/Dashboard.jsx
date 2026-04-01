@@ -7,44 +7,42 @@ import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axios';
 import {
   Users, UserCheck, Percent, Briefcase, PlusCircle,
-  Building, FileDown, DollarSign, UserX, TrendingUp, Loader2, X,
+  Building, FileDown, DollarSign, UserX, TrendingUp, Loader2, X
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell,
+  ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell
 } from 'recharts';
 import { Link } from 'react-router-dom';
-import { pageVariants, staggerContainer } from '../../utils/animations';
 
-/* ── Custom chart tooltip ────────────────────────── */
+/* ── Custom chart tooltip ─────────────────────────── */
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 px-4 py-3 text-sm font-semibold">
       <p className="text-slate-500 dark:text-slate-400 mb-1 text-xs uppercase tracking-wide">{label}</p>
-      <p className="text-slate-900 dark:text-slate-100 text-base font-black">
-        {payload[0].value}
+      <p className="text-slate-900 dark:text-slate-100 text-base font-black">{payload[0].value}
         <span className="text-xs text-slate-400 font-medium ml-1">{payload[0].name}</span>
       </p>
     </div>
   );
 };
 
-/* ── Fallback Dummy Data ─────────────────────────── */
+/* ── Fallback Dummy Data ──────────────────────────── */
 const DUMMY_BRANCH_DATA = [
-  { branch: 'CSE', percentage: 45, placed: 28, total: 62 },
-  { branch: 'ISE', percentage: 38, placed: 21, total: 55 },
-  { branch: 'ECE', percentage: 29, placed: 14, total: 48 },
-  { branch: 'ME',  percentage: 18, placed: 7,  total: 40 },
-  { branch: 'CV',  percentage: 12, placed: 4,  total: 35 },
+  { branch: "CSE", percentage: 45, placed: 28, total: 62 },
+  { branch: "ISE", percentage: 38, placed: 21, total: 55 },
+  { branch: "ECE", percentage: 29, placed: 14, total: 48 },
+  { branch: "ME",  percentage: 18, placed: 7,  total: 40 },
+  { branch: "CV",  percentage: 12, placed: 4,  total: 35 },
 ];
 
 const DUMMY_COMPANY_DATA = [
-  { company_name: 'Infosys',   hired_count: 24 },
-  { company_name: 'TCS',       hired_count: 18 },
-  { company_name: 'Wipro',     hired_count: 15 },
-  { company_name: 'Accenture', hired_count: 12 },
-  { company_name: 'Cognizant', hired_count: 9  },
+  { company_name: "Infosys",  hired_count: 24 },
+  { company_name: "TCS",      hired_count: 18 },
+  { company_name: "Wipro",    hired_count: 15 },
+  { company_name: "Accenture",hired_count: 12 },
+  { company_name: "Cognizant",hired_count: 9  },
 ];
 
 const DUMMY_STATS = {
@@ -55,7 +53,7 @@ const DUMMY_STATS = {
   average_ctc: 4.5,
 };
 
-const formatCollegeName = (name) =>
+const formatCollegeName = (name) => 
   name?.split(' ')
     .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
     .join(' ') || 'Your College';
@@ -63,11 +61,11 @@ const formatCollegeName = (name) =>
 /* ══════════════════════════════════════════════════ */
 const TPODashboard = () => {
   const { user } = useAuth();
-  const [data,        setData]        = useState(null);
-  const [loading,     setLoading]     = useState(true);
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
-  const [showBanner,  setShowBanner]  = useState(false);
-  const [isUsingDummy,setIsUsingDummy]= useState(false);
+  const [showBanner, setShowBanner] = useState(false);
+  const [isUsingDummy, setIsUsingDummy] = useState(false);
 
   useEffect(() => {
     api.get('/api/analytics/dashboard/')
@@ -81,7 +79,8 @@ const TPODashboard = () => {
           setData(d);
         }
       })
-      .catch(() => {
+      .catch(err => {
+        console.error(err);
         setData(DUMMY_STATS);
         setIsUsingDummy(true);
         setShowBanner(true);
@@ -90,6 +89,7 @@ const TPODashboard = () => {
   }, []);
 
   const handleDownloadNAAC = async () => {
+    // ... logic unchanged
     setDownloading(true);
     try {
       const token = localStorage.getItem('token');
@@ -98,49 +98,52 @@ const TPODashboard = () => {
       });
       if (!response.ok) throw new Error('Server error');
       const blob = await response.blob();
-      const url  = window.URL.createObjectURL(blob);
-      const a    = document.createElement('a');
-      a.href     = url;
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
       a.download = 'NAAC_Placement_Report.pdf';
       document.body.appendChild(a);
       a.click();
       a.remove();
       window.URL.revokeObjectURL(url);
-    } catch {
+    } catch (err) {
       alert('Could not generate report. Make sure reportlab is installed.');
     } finally {
       setDownloading(false);
     }
   };
 
-  const rawBranch   = data?.branch_wise_stats || [];
-  const cleanBranch = rawBranch.filter(b => b.branch && b.branch !== 'Unknown' && b.branch !== 'unknown');
-  const branchData  = cleanBranch.length > 0 ? cleanBranch : DUMMY_BRANCH_DATA;
-
-  const rawCompany  = data?.top_companies || [];
+  const rawBranch = data?.branch_wise_stats || [];
+  const cleanBranch = rawBranch.filter(
+    b => b.branch && b.branch !== 'Unknown' && b.branch !== 'unknown'
+  );
+  
+  const branchData = cleanBranch.length > 0 ? cleanBranch : DUMMY_BRANCH_DATA;
+  
+  const rawCompany = data?.top_companies || [];
   const companyData = rawCompany.length > 0 ? rawCompany : DUMMY_COMPANY_DATA;
 
+  // Pie Chart Data
   const pieData = [
-    { name: 'Placed',   value: data?.placed_students || 0, color: '#3B82F6' },
+    { name: 'Placed', value: data?.placed_students || 0, color: '#3B82F6' },
     { name: 'Unplaced', value: Math.max(0, (data?.total_students || 0) - (data?.placed_students || 0)), color: '#E2E8F0' },
   ];
 
   return (
     <Layout>
       <motion.div
-        variants={pageVariants}
-        initial="initial"
-        animate="animate"
-        exit="exit"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
         className="max-w-7xl mx-auto space-y-7 pb-10"
       >
-        {/* ── Dummy data banner ── */}
+        {/* ── Banner ── */}
         <AnimatePresence>
           {showBanner && isUsingDummy && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
+              initial={{ opacity: 0, height: 0, mb: 0 }}
+              animate={{ opacity: 1, height: 'auto', mb: 16 }}
+              exit={{ opacity: 0, height: 0, mb: 0 }}
               className="overflow-hidden"
             >
               <div className="bg-amber-50 dark:bg-amber-900/40 border border-amber-200 dark:border-amber-700/50 text-amber-800 dark:text-amber-200 px-4 py-3 rounded-xl flex items-center justify-between shadow-sm">
@@ -148,56 +151,31 @@ const TPODashboard = () => {
                   <span className="text-xl">📊</span>
                   Showing sample data. Add students and drives to see real statistics.
                 </div>
-                <motion.button
-                  whileHover={{ scale: 1.1, rotate: 90 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => setShowBanner(false)}
-                  className="text-amber-600 hover:text-amber-900 dark:hover:text-amber-100 transition-colors"
-                >
+                <button onClick={() => setShowBanner(false)} className="text-amber-600 hover:text-amber-900 dark:hover:text-amber-100 transition-colors">
                   <X size={16} />
-                </motion.button>
+                </button>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* ── Animated header banner ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary via-[#1a4a7a] to-secondary px-7 py-6 text-white shadow-xl dark:border dark:border-white/10"
-        >
+        {/* ── Header banner ── */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary via-[#1a4a7a] to-secondary px-7 py-6 text-white shadow-xl dark:border dark:border-white/10">
           <div className="absolute inset-0 bg-dot-grid opacity-25 pointer-events-none mix-blend-overlay" />
-          {/* Floating blobs */}
-          <motion.div
-            animate={{ scale: [1, 1.2, 1], opacity: [0.05, 0.1, 0.05] }}
-            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute right-0 bottom-0 w-64 h-64 rounded-full bg-white/10 blur-3xl pointer-events-none"
-          />
-          <motion.div
-            animate={{ scale: [1, 1.3, 1], opacity: [0.03, 0.07, 0.03] }}
-            transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-            className="absolute left-1/3 top-0 w-48 h-48 rounded-full bg-white/10 blur-3xl pointer-events-none"
-          />
+          <div className="absolute right-0 bottom-0 w-64 h-64 rounded-full bg-white/5 blur-3xl pointer-events-none" />
 
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <p className="text-blue-200/70 text-xs font-bold uppercase tracking-widest mb-2">
-                TPO Analytics Dashboard
-              </p>
+              <p className="text-blue-200/70 text-xs font-bold uppercase tracking-widest mb-2">TPO Analytics Dashboard</p>
               <h1 className="text-3xl font-black tracking-tight mb-1">
                 {formatCollegeName(user?.college_name)}
               </h1>
-              <p className="text-blue-200/70 font-medium text-sm">
-                Institutional placement intelligence &amp; tracking.
-              </p>
+              <p className="text-blue-200/70 font-medium text-sm">Institutional placement intelligence & tracking.</p>
             </div>
 
             <div className="flex gap-3 shrink-0 flex-wrap">
               <motion.button
-                whileHover={{ scale: 1.03, boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
                 onClick={handleDownloadNAAC}
                 disabled={downloading}
                 className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white px-4 py-2.5 rounded-xl font-bold text-sm transition-all backdrop-blur-sm disabled:opacity-60"
@@ -207,47 +185,38 @@ const TPODashboard = () => {
               </motion.button>
               <Link to="/tpo/drives/create">
                 <motion.div
-                  whileHover={{ scale: 1.03, boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}
-                  whileTap={{ scale: 0.97 }}
-                  className="flex items-center gap-2 bg-white text-primary px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all cursor-pointer"
+                  whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                  className="flex items-center gap-2 bg-white text-primary px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all"
                 >
                   <PlusCircle size={16} /> Create Drive
                 </motion.div>
               </Link>
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        {/* ── Stat Cards (staggered) ── */}
+        {/* ── Stat Cards ── */}
         {loading ? (
           <StatCardSkeleton count={6} />
         ) : (
-          <motion.div
-            variants={staggerContainer}
-            initial="initial"
-            animate="animate"
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4"
-          >
-            <StatCard index={0} icon={Users}      value={data?.total_students || 0}                                              label="Total Students"  color="blue"   onClick={() => window.location.href = '/tpo/students'} />
-            <StatCard index={1} icon={UserCheck}  value={data?.placed_students || 0}                                             label="Placed"          color="green"  />
-            <StatCard index={2} icon={UserX}      value={Math.max(0, (data?.total_students || 0) - (data?.placed_students || 0))} label="Unplaced"        color="rose"   />
-            <StatCard index={3} icon={Percent}    value={data?.placement_percentage || 0}                                        label="% Rate"          color="purple" suffix="%" />
-            <StatCard index={4} icon={DollarSign} value={data?.average_ctc || 0}                                                 label="Avg CTC"         color="teal"   suffix=" LPA" />
-            <StatCard index={5} icon={Briefcase}  value={data?.active_drives || 0}                                               label="Active Drives"   color="orange" onClick={() => window.location.href = '/tpo/drives'} />
-          </motion.div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+            <StatCard index={0} icon={Users}     value={data?.total_students || 0}   label="Total Students"  color="blue"   onClick={() => window.location.href='/tpo/students'} />
+            <StatCard index={1} icon={UserCheck}  value={data?.placed_students || 0}  label="Placed"          color="green"  />
+            <StatCard index={2} icon={UserX}      value={Math.max(0, (data?.total_students||0)-(data?.placed_students||0))} label="Unplaced" color="rose" />
+            <StatCard index={3} icon={Percent}    value={data?.placement_percentage||0} label="% Rate"       color="purple" suffix="%" />
+            <StatCard index={4} icon={DollarSign} value={data?.average_ctc||0}        label="Avg CTC"         color="teal"   suffix=" LPA" />
+            <StatCard index={5} icon={Briefcase}  value={data?.active_drives||0}      label="Active Drives"   color="orange" onClick={() => window.location.href='/tpo/drives'} />
+          </div>
         )}
 
         {/* ── Charts ── */}
         {!loading && data && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            {/* Pie Chart */}
+            {/* Pie Chart: Placed vs Not Placed */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35 }}
-              whileHover={{ y: -2, boxShadow: '0 12px 40px rgba(0,0,0,0.08)' }}
-              className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-7 shadow-sm text-center col-span-1 transition-shadow duration-300"
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
+              className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-7 shadow-sm text-center col-span-1"
             >
               <div className="flex items-center gap-2 mb-2 justify-center">
                 <div className="w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/30 flex items-center justify-center">
@@ -255,7 +224,7 @@ const TPODashboard = () => {
                 </div>
                 <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">Placement Ratio</h2>
               </div>
-
+              
               <div className="relative h-60 mt-4 flex justify-center">
                 <ResponsiveContainer width={240} height={240}>
                   <PieChart>
@@ -276,23 +245,21 @@ const TPODashboard = () => {
                     <Tooltip content={<CustomTooltip />} />
                   </PieChart>
                 </ResponsiveContainer>
-
+                
+                {/* Center text */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-2">
-                  <span className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-                    {(data?.placement_percentage || 0).toFixed(0)}%
-                  </span>
+                  <span className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">{(data?.placement_percentage || 0).toFixed(0)}%</span>
                   <span className="text-xs font-semibold text-slate-400">Placed</span>
                 </div>
               </div>
             </motion.div>
 
-            {/* Branch-wise bar chart */}
+            {/* Branch-wise placements */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              whileHover={{ y: -2, boxShadow: '0 12px 40px rgba(0,0,0,0.08)' }}
-              className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-7 shadow-sm col-span-1 lg:col-span-2 transition-shadow duration-300"
+              className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-7 shadow-sm col-span-1 lg:col-span-2"
             >
               <div className="flex items-center gap-2 mb-6">
                 <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
@@ -303,7 +270,7 @@ const TPODashboard = () => {
                   <p className="text-xs text-slate-400 font-medium">Percentage of students placed per branch</p>
                 </div>
               </div>
-
+              
               {cleanBranch.length === 0 && (
                 <div className="text-[10px] text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-3 py-1 rounded-full mb-3 inline-block font-semibold">
                   Sample data — add placements to see real stats
@@ -316,7 +283,7 @@ const TPODashboard = () => {
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" className="dark:stroke-slate-700/50" />
                     <XAxis dataKey="branch" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 600 }} dy={8} />
                     <YAxis domain={[0, 100]} tickFormatter={v => v + '%'} axisLine={false} tickLine={false} tick={{ fill: '#cbd5e1', fontSize: 11 }} />
-                    <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} formatter={(val) => val + '%'} />
+                    <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} formatter={(val) => val + '%'} contentStyle={{ borderRadius: 8 }} />
                     <Bar animationDuration={1200} animationEasing="ease-out" dataKey="percentage" fill="#3B82F6" radius={[4, 4, 0, 0]} barSize={32} />
                   </BarChart>
                 </ResponsiveContainer>
@@ -328,8 +295,7 @@ const TPODashboard = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              whileHover={{ y: -2, boxShadow: '0 12px 40px rgba(0,0,0,0.08)' }}
-              className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-7 shadow-sm col-span-1 lg:col-span-3 transition-shadow duration-300"
+              className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-7 shadow-sm col-span-1 lg:col-span-3"
             >
               <div className="flex items-center gap-2 mb-6">
                 <div className="w-8 h-8 rounded-lg bg-violet-50 dark:bg-violet-900/30 flex items-center justify-center">
@@ -340,7 +306,7 @@ const TPODashboard = () => {
                   <p className="text-xs text-slate-400 font-medium">Students hired per company this cycle</p>
                 </div>
               </div>
-
+              
               {rawCompany.length === 0 && (
                 <div className="text-[10px] text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-3 py-1 rounded-full mb-3 inline-block font-semibold">
                   Sample data — add placements to see real stats
@@ -360,16 +326,7 @@ const TPODashboard = () => {
                     <XAxis dataKey="company_name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 600 }} dy={8} />
                     <YAxis axisLine={false} tickLine={false} tick={{ fill: '#cbd5e1', fontSize: 11 }} />
                     <Tooltip content={<CustomTooltip />} />
-                    <Area
-                      animationDuration={1500}
-                      type="monotone"
-                      dataKey="hired_count"
-                      name="Hired"
-                      stroke="#8B5CF6"
-                      strokeWidth={2.5}
-                      fill="url(#areaGradient)"
-                      dot={{ fill: '#8B5CF6', strokeWidth: 2, r: 4 }}
-                    />
+                    <Area animationDuration={1500} type="monotone" dataKey="hired_count" name="Hired" stroke="#8B5CF6" strokeWidth={2.5} fill="url(#areaGradient)" dot={{ fill: '#8B5CF6', strokeWidth: 2, r: 4 }} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>

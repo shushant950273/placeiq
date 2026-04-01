@@ -8,10 +8,3 @@ django-cors-headers>=4.3
 # Uncomment and install separately on Python 3.12 / 3.13:
 # Pillow>=10.2
 # reportlab>=4.0
-
-# Deployment packages
-gunicorn>=21.2.0
-dj-database-url>=2.1.0
-psycopg2-binary>=2.9.9
-whitenoise>=6.6.0
-python-dotenv>=1.0.1

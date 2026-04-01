@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Layout from '../../components/Layout';
 import DriveCard from '../../components/DriveCard';
 import { CardSkeleton } from '../../components/LoadingSkeleton';
 import api from '../../api/axios';
-import { Search, Briefcase } from 'lucide-react';
-import { pageVariants, staggerContainer } from '../../utils/animations';
+import { Search, Briefcase, SlidersHorizontal } from 'lucide-react';
 
 const FILTERS = ['All', 'Upcoming', 'Ongoing'];
 
@@ -14,6 +13,7 @@ const StudentDrives = () => {
   const [loading, setLoading] = useState(true);
   const [search,  setSearch]  = useState('');
   const [filter,  setFilter]  = useState('All');
+  const searchRef = useRef(null);
 
   useEffect(() => {
     api.get('/api/drives/')
@@ -33,42 +33,35 @@ const StudentDrives = () => {
   return (
     <Layout>
       <motion.div
-        variants={pageVariants}
-        initial="initial"
-        animate="animate"
-        exit="exit"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
         className="max-w-7xl mx-auto pb-10 space-y-7"
       >
         {/* ── Page Header ── */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-[#E6EDF3]">
-              Placement Drives
-            </h1>
-            <p className="text-slate-400 dark:text-[#8B949E] mt-1 font-medium text-sm">
-              {loading
-                ? 'Loading...'
-                : `${filteredDrives.length} drive${filteredDrives.length !== 1 ? 's' : ''} matching your eligibility`}
+            <h1 className="text-3xl font-black tracking-tight text-slate-900">Placement Drives</h1>
+            <p className="text-slate-400 mt-1 font-medium text-sm">
+              {loading ? 'Loading...' : `${filteredDrives.length} drive${filteredDrives.length !== 1 ? 's' : ''} matching your eligibility`}
             </p>
           </div>
 
-          {/* Filter tabs with animated active pill */}
-          <div className="flex gap-1 bg-slate-100 dark:bg-[#161B22] p-1 rounded-xl shrink-0 border border-transparent dark:border-[#30363D]">
+          {/* Filter tabs */}
+          <div className="flex gap-1 bg-slate-100 p-1 rounded-xl shrink-0">
             {FILTERS.map(f => (
               <motion.button
                 key={f}
                 whileTap={{ scale: 0.96 }}
                 onClick={() => setFilter(f)}
                 className={`relative px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
-                  filter === f
-                    ? 'text-slate-900 dark:text-[#E6EDF3]'
-                    : 'text-slate-500 dark:text-[#8B949E] hover:text-slate-700 dark:hover:text-[#E6EDF3]'
+                  filter === f ? 'text-slate-900' : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
                 {filter === f && (
                   <motion.div
                     layoutId="filterTab"
-                    className="absolute inset-0 bg-white dark:bg-[#21262D] shadow-sm rounded-lg border border-slate-200/50 dark:border-[#30363D]"
+                    className="absolute inset-0 bg-white shadow-sm rounded-lg"
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                   />
                 )}
@@ -80,27 +73,23 @@ const StudentDrives = () => {
 
         {/* ── Search Bar ── */}
         <div className="relative max-w-xl">
-          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-[#656D76] pointer-events-none" />
+          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
           <input
+            ref={searchRef}
             type="text"
             placeholder="Search by company or role…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-[#161B22] border border-slate-200 dark:border-[#30363D] text-slate-900 dark:text-[#E6EDF3] rounded-xl text-sm font-medium placeholder:text-slate-400 dark:placeholder:text-[#656D76] focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all duration-300 shadow-card focus:w-full hover:border-slate-300 dark:hover:border-[#484F58]"
+            className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm font-medium placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all shadow-card hover:border-slate-300"
           />
-          <AnimatePresence>
-            {search && (
-              <motion.button
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                onClick={() => setSearch('')}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-[#656D76] hover:text-slate-600 dark:hover:text-[#8B949E] text-xs font-bold bg-slate-100 dark:bg-[#21262D] px-2 py-0.5 rounded-lg transition-colors"
-              >
-                Clear
-              </motion.button>
-            )}
-          </AnimatePresence>
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-bold bg-slate-100 px-2 py-0.5 rounded-lg transition-colors"
+            >
+              Clear
+            </button>
+          )}
         </div>
 
         {/* ── Content ── */}
@@ -110,13 +99,13 @@ const StudentDrives = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center justify-center py-24 bg-white dark:bg-[#161B22] rounded-2xl border border-dashed border-slate-200 dark:border-[#30363D] shadow-card"
+            className="flex flex-col items-center justify-center py-24 bg-white rounded-2xl border border-dashed border-slate-200 shadow-card"
           >
-            <div className="w-20 h-20 bg-slate-50 dark:bg-[#21262D] rounded-2xl border-2 border-dashed border-slate-200 dark:border-[#30363D] flex items-center justify-center mb-5">
-              <Briefcase className="text-slate-300 dark:text-[#656D76]" size={32} />
+            <div className="w-20 h-20 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 flex items-center justify-center mb-5">
+              <Briefcase className="text-slate-300" size={32} />
             </div>
-            <h3 className="text-xl font-bold text-slate-700 dark:text-[#E6EDF3] mb-2">No Drives Found</h3>
-            <p className="text-slate-400 dark:text-[#8B949E] font-medium text-sm max-w-xs text-center">
+            <h3 className="text-xl font-bold text-slate-700 mb-2">No Drives Found</h3>
+            <p className="text-slate-400 font-medium text-sm max-w-xs text-center">
               {search
                 ? `No results for "${search}". Try a different search term.`
                 : 'No drives match your current filter or eligibility criteria.'
@@ -125,7 +114,7 @@ const StudentDrives = () => {
             {search && (
               <button
                 onClick={() => setSearch('')}
-                className="mt-4 text-accent dark:text-[#58A6FF] font-bold text-sm hover:text-secondary transition-colors"
+                className="mt-4 text-accent font-bold text-sm hover:text-secondary transition-colors"
               >
                 Clear search
               </button>
@@ -133,9 +122,6 @@ const StudentDrives = () => {
           </motion.div>
         ) : (
           <motion.div
-            variants={staggerContainer}
-            initial="initial"
-            animate="animate"
             layout
             className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"
           >

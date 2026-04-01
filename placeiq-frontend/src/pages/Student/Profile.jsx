@@ -9,12 +9,12 @@ import {
   Link as LinkIcon, Save, X, Plus, AlertCircle,
   CheckCircle, Zap, ExternalLink,
 } from 'lucide-react';
-import { pageVariants } from '../../utils/animations';
 
-/* ── Input wrapper ─────────────────────────────── */
+
+/* ── Input wrapper ────────────────────────────────── */
 const Field = ({ label, icon: Icon, children }) => (
   <div>
-    <label className="block text-xs font-bold text-slate-500 dark:text-[#8B949E] uppercase tracking-widest mb-1.5">{label}</label>
+    <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">{label}</label>
     <div className="relative">
       {Icon && <Icon size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />}
       {children}
@@ -23,25 +23,24 @@ const Field = ({ label, icon: Icon, children }) => (
 );
 
 const inputCls = (hasIcon = true, disabled = false) =>
-  `w-full py-3 rounded-xl border text-sm font-medium transition-all duration-200
+  `w-full py-3 rounded-xl border text-sm font-medium transition-all
    ${hasIcon ? 'pl-10 pr-4' : 'px-4'}
    ${disabled
-     ? 'border-slate-100 dark:border-[#30363D] bg-slate-50 dark:bg-[#21262D] text-slate-400 dark:text-[#656D76] cursor-not-allowed'
-     : 'border-slate-200 dark:border-[#30363D] bg-slate-50 dark:bg-[#0D1117] text-slate-800 dark:text-[#E6EDF3] focus:bg-white dark:focus:bg-[#161B22] focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] outline-none'
+     ? 'border-slate-100 bg-slate-50 text-slate-400 cursor-not-allowed'
+     : 'border-slate-200 bg-slate-50 text-slate-800 focus:bg-white focus:border-accent focus:ring-2 focus:ring-accent/15 outline-none'
    }`;
 
-/* ── Tag chip ──────────────────────────────────── */
+/* ── Tag chip ─────────────────────────────────────── */
 const TagChip = ({ label, onRemove, color = 'blue' }) => {
   const c = {
-    blue:   'bg-blue-50   text-blue-700   border-blue-200   dark:bg-blue-900/30  dark:text-blue-400  dark:border-blue-700',
-    indigo: 'bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:border-violet-700',
+    blue: 'bg-blue-50 text-blue-700 border-blue-200',
+    indigo: 'bg-violet-50 text-violet-700 border-violet-200',
   }[color];
   return (
     <motion.span
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.8 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 20 }}
       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${c}`}
     >
       {label}
@@ -52,15 +51,15 @@ const TagChip = ({ label, onRemove, color = 'blue' }) => {
   );
 };
 
-/* ── Section card ──────────────────────────────── */
+/* ── Section card ─────────────────────────────────── */
 const Section = ({ title, icon: Icon, children, delay = 0 }) => (
   <motion.div
     initial={{ opacity: 0, y: 16 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ delay, duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-    className="bg-white dark:bg-[#161B22] rounded-2xl border border-slate-100 dark:border-[#30363D] shadow-card p-7"
+    transition={{ delay, duration: 0.4 }}
+    className="bg-white rounded-2xl border border-slate-100 shadow-card p-7"
   >
-    <h2 className="flex items-center gap-2.5 text-base font-bold text-slate-900 dark:text-[#E6EDF3] mb-6">
+    <h2 className="flex items-center gap-2.5 text-base font-bold text-slate-900 mb-6">
       <div className="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center">
         <Icon size={15} className="text-accent" />
       </div>
@@ -70,7 +69,7 @@ const Section = ({ title, icon: Icon, children, delay = 0 }) => (
   </motion.div>
 );
 
-/* ── Animated circular score ───────────────────── */
+/* ── Animated circular progress ───────────────────── */
 const CircularScore = ({ score }) => {
   const R   = 44;
   const C   = 2 * Math.PI * R;
@@ -80,28 +79,19 @@ const CircularScore = ({ score }) => {
   return (
     <div className="relative w-36 h-36 flex items-center justify-center">
       <svg width="144" height="144" viewBox="0 0 100 100" className="-rotate-90 absolute inset-0">
-        <circle cx="50" cy="50" r={R} fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="8" />
-        <motion.circle
+        <circle cx="50" cy="50" r={R} fill="none" stroke="#f1f5f9" strokeWidth="8" />
+        <circle
           cx="50" cy="50" r={R} fill="none"
           stroke={col} strokeWidth="8"
           strokeLinecap="round"
           strokeDasharray={C}
-          initial={{ strokeDashoffset: C }}
-          animate={{ strokeDashoffset: off }}
-          transition={{ duration: 1.5, ease: 'easeOut', delay: 0.3 }}
-          style={{ filter: `drop-shadow(0 0 8px ${col}80)` }}
+          strokeDashoffset={off}
+          style={{ transition: 'stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1)', filter: `drop-shadow(0 0 6px ${col}60)` }}
         />
       </svg>
       <div className="text-center relative z-10">
-        <motion.p
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.5, type: 'spring', stiffness: 300 }}
-          className="text-4xl font-black text-white leading-none"
-        >
-          {score}
-        </motion.p>
-        <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest mt-0.5">Score</p>
+        <p className="text-4xl font-black text-slate-900 leading-none">{score}</p>
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Score</p>
       </div>
     </div>
   );
@@ -196,7 +186,7 @@ const Profile = () => {
       <Layout>
         <div className="max-w-5xl mx-auto grid grid-cols-1 xl:grid-cols-3 gap-6">
           <div className="xl:col-span-2 space-y-5">
-            {[1, 2, 3, 4].map(i => <div key={i} className="h-52 skeleton rounded-2xl" />)}
+            {[1,2,3,4].map(i => <div key={i} className="h-52 skeleton rounded-2xl" />)}
           </div>
           <div className="h-96 skeleton rounded-2xl" />
         </div>
@@ -216,17 +206,14 @@ const Profile = () => {
       </AnimatePresence>
 
       <motion.div
-        variants={pageVariants}
-        initial="initial"
-        animate="animate"
-        exit="exit"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
         className="max-w-5xl mx-auto pb-24"
       >
         <div className="mb-7">
-          <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-[#E6EDF3]">My Profile</h1>
-          <p className="text-slate-400 dark:text-[#8B949E] mt-1 font-medium text-sm">
-            Keep your profile updated to attract recruiters.
-          </p>
+          <h1 className="text-3xl font-black tracking-tight text-slate-900">My Profile</h1>
+          <p className="text-slate-400 mt-1 font-medium text-sm">Keep your profile updated to attract recruiters.</p>
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
@@ -234,6 +221,7 @@ const Profile = () => {
           {/* ── Left: Form ── */}
           <form id="profile-form" onSubmit={handleSubmit} className="xl:col-span-2 space-y-5">
 
+            {/* Personal Info */}
             <Section title="Personal Information" icon={User} delay={0}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <Field label="Full Name" icon={User}>
@@ -250,12 +238,12 @@ const Profile = () => {
                 </Field>
                 <Field label="Branch">
                   <select name="branch" value={formData.branch} onChange={change('branch')} className={inputCls(false)}>
-                    {['CSE', 'ISE', 'ECE', 'ME', 'CV', 'EEE'].map(b => <option key={b}>{b}</option>)}
+                    {['CSE','ISE','ECE','ME','CV','EEE'].map(b => <option key={b}>{b}</option>)}
                   </select>
                 </Field>
                 <Field label="Semester">
                   <select name="semester" value={formData.semester} onChange={change('semester')} className={inputCls(false)}>
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map(s => <option key={s} value={s}>Semester {s}</option>)}
+                    {[1,2,3,4,5,6,7,8].map(s => <option key={s} value={s}>Semester {s}</option>)}
                   </select>
                 </Field>
                 <Field label="CGPA">
@@ -267,16 +255,15 @@ const Profile = () => {
               </div>
             </Section>
 
+            {/* Skills */}
             <Section title="Technical Skills" icon={Zap} delay={0.05}>
               <div className="flex flex-wrap gap-2 mb-5 min-h-[2.5rem]">
                 <AnimatePresence mode="popLayout">
                   {formData.skills.map((s, i) => (
-                    <TagChip key={s + i} label={s} color="blue" onRemove={() => removeTag('skills', i)} />
+                    <TagChip key={s+i} label={s} color="blue" onRemove={() => removeTag('skills', i)} />
                   ))}
                 </AnimatePresence>
-                {formData.skills.length === 0 && (
-                  <span className="text-xs text-slate-400 dark:text-[#656D76] italic">No skills added yet</span>
-                )}
+                {formData.skills.length === 0 && <span className="text-xs text-slate-400 italic">No skills added yet</span>}
               </div>
               <div className="flex gap-2">
                 <input
@@ -288,26 +275,24 @@ const Profile = () => {
                 />
                 <motion.button
                   type="button"
-                  whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => addTag('skills', newSkill, setNewSkill)}
-                  className="flex items-center gap-1.5 bg-slate-100 dark:bg-[#21262D] hover:bg-slate-200 dark:hover:bg-[#30363D] text-slate-700 dark:text-[#E6EDF3] px-4 py-2.5 rounded-xl font-bold text-sm transition-colors"
+                  className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-bold text-sm transition-colors"
                 >
                   <Plus size={15} /> Add
                 </motion.button>
               </div>
             </Section>
 
+            {/* Certifications */}
             <Section title="Certifications" icon={GraduationCap} delay={0.1}>
               <div className="flex flex-wrap gap-2 mb-5 min-h-[2.5rem]">
                 <AnimatePresence mode="popLayout">
                   {formData.certifications.map((c, i) => (
-                    <TagChip key={c + i} label={c} color="indigo" onRemove={() => removeTag('certifications', i)} />
+                    <TagChip key={c+i} label={c} color="indigo" onRemove={() => removeTag('certifications', i)} />
                   ))}
                 </AnimatePresence>
-                {formData.certifications.length === 0 && (
-                  <span className="text-xs text-slate-400 dark:text-[#656D76] italic">No certifications added yet</span>
-                )}
+                {formData.certifications.length === 0 && <span className="text-xs text-slate-400 italic">No certifications added yet</span>}
               </div>
               <div className="flex gap-2">
                 <input
@@ -319,16 +304,16 @@ const Profile = () => {
                 />
                 <motion.button
                   type="button"
-                  whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => addTag('certifications', newCert, setNewCert)}
-                  className="flex items-center gap-1.5 bg-slate-100 dark:bg-[#21262D] hover:bg-slate-200 dark:hover:bg-[#30363D] text-slate-700 dark:text-[#E6EDF3] px-4 py-2.5 rounded-xl font-bold text-sm transition-colors"
+                  className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-bold text-sm transition-colors"
                 >
                   <Plus size={15} /> Add
                 </motion.button>
               </div>
             </Section>
 
+            {/* Links */}
             <Section title="Professional Links" icon={LinkIcon} delay={0.15}>
               <div className="space-y-4">
                 <Field label="Resume / Drive URL" icon={LinkIcon}>
@@ -360,55 +345,28 @@ const Profile = () => {
                 <CircularScore score={stats.score} />
               </div>
 
-              {/* Animated progress bar */}
-              <div className="mb-4">
-                <div className="flex justify-between text-xs font-semibold text-white/60 mb-2">
-                  <span>Completeness</span>
-                  <span>{stats.score}%</span>
-                </div>
-                <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                  <motion.div
-                    className="h-full rounded-full bg-gradient-to-r from-blue-400 to-blue-500"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${stats.score}%` }}
-                    transition={{ duration: 1.2, ease: 'easeOut', delay: 0.4 }}
-                  />
-                </div>
-              </div>
-
               {stats.suggestions?.length > 0 ? (
                 <div className="bg-white/10 rounded-xl p-4 border border-white/15 space-y-3">
                   <p className="text-xs font-bold text-blue-200 uppercase tracking-widest">Unlock 100%</p>
                   {stats.suggestions.map((s, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, x: -8 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.8 + i * 0.08 }}
-                      className="flex gap-2 text-xs text-white/80 font-medium leading-snug"
-                    >
+                    <div key={i} className="flex gap-2 text-xs text-white/80 font-medium leading-snug">
                       <AlertCircle size={13} className="text-blue-300 shrink-0 mt-0.5" />
                       <span>{s}</span>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               ) : (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.8, type: 'spring' }}
-                  className="bg-emerald-500/20 rounded-xl p-4 border border-emerald-400/30 flex items-center gap-3"
-                >
+                <div className="bg-emerald-500/20 rounded-xl p-4 border border-emerald-400/30 flex items-center gap-3">
                   <CheckCircle size={18} className="text-emerald-400 shrink-0" />
                   <p className="text-sm font-bold text-white">Profile is 100% complete! 🎉</p>
-                </motion.div>
+                </div>
               )}
             </motion.div>
           </div>
         </div>
       </motion.div>
 
-      {/* ── Sticky Save Bar ── */}
+      {/* ── Sticky Save Bar (appears when dirty) ── */}
       <AnimatePresence>
         {dirty && (
           <motion.div
@@ -416,29 +374,26 @@ const Profile = () => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 80, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed bottom-0 left-0 right-0 md:left-60 z-50 p-4 bg-white/90 dark:bg-[#161B22]/90 backdrop-blur-xl border-t border-slate-200 dark:border-[#30363D] shadow-xl flex items-center justify-between gap-4"
+            className="fixed bottom-0 left-0 right-0 md:left-60 z-50 p-4 bg-white/90 backdrop-blur-xl border-t border-slate-200 shadow-xl flex items-center justify-between gap-4"
           >
-            <p className="text-sm font-semibold text-slate-600 dark:text-[#8B949E]">You have unsaved changes.</p>
+            <p className="text-sm font-semibold text-slate-600">You have unsaved changes.</p>
             <div className="flex gap-3">
               <button
                 type="button"
-                onClick={() => setDirty(false)}
-                className="px-4 py-2 text-sm font-semibold text-slate-500 dark:text-[#8B949E] hover:bg-slate-100 dark:hover:bg-[#21262D] rounded-xl transition-colors"
+                onClick={() => { setDirty(false); }}
+                className="px-4 py-2 text-sm font-semibold text-slate-500 hover:bg-slate-100 rounded-xl transition-colors"
               >
                 Discard
               </button>
               <motion.button
-                whileHover={{ scale: 1.02, boxShadow: '0 4px 20px rgba(59,130,246,0.4)' }}
+                whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
                 type="submit"
                 form="profile-form"
                 disabled={saving}
                 className="btn-primary flex items-center gap-2 px-6 py-2 text-sm"
               >
-                {saving
-                  ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Saving…</>
-                  : <><Save size={15} /> Save Profile</>
-                }
+                {saving ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Saving…</> : <><Save size={15} /> Save Profile</>}
               </motion.button>
             </div>
           </motion.div>
