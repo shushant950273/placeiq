@@ -104,6 +104,11 @@ CORS_ALLOWED_ORIGINS = [
     "https://placeiq-1hoq.vercel.app",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://placeiq-1hoq.vercel.app",
+    "http://localhost:5173",
+]
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
