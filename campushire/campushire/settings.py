@@ -101,6 +101,7 @@ REST_FRAMEWORK = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "https://placeiq-1hoq.vercel.app",
 ]
 
 SIMPLE_JWT = {
